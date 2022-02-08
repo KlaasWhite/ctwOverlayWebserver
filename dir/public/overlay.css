@@ -1,0 +1,40 @@
+#root{
+    position: relative;
+    height: 100vh;
+    background-color: "";
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    font-size: 4rem;
+    color: white;
+}
+
+#team_blue{
+    color: lightskyblue;
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    vertical-align: bottom;
+}
+
+.team-name{
+    font-size: 7rem;
+    font-weight: bold;
+}
+
+#team_red .team-name th{
+    text-align: right;
+}
+
+.player {
+    font-size: 4rem;
+}
+
+#team_red{
+    color: red;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    vertical-align: bottom;
+    text-align: right;
+}
