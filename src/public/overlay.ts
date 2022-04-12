@@ -93,10 +93,6 @@ function setTeams(teams: any[]) {
     createTable(teamBlue, "team_blue");
 }
 
-function changeClass(event: any) {
-    console.log(typeof event);
-}
-
 const classList = [
     "barbarian",
     "bulwark",

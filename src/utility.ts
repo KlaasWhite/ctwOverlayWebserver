@@ -1,7 +1,6 @@
 import { Teams } from "./interfaces";
 
 export function getTeam(team: string): Teams {
-    console.log("Get team: " + team);
     switch (team.toLowerCase()) {
         case "red":
         case "wool_red":
