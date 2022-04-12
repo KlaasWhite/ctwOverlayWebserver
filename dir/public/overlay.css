@@ -1,4 +1,4 @@
-#root{
+#root {
     position: relative;
     height: 100vh;
     background-color: "";
@@ -9,7 +9,7 @@
     color: white;
 }
 
-#team_blue{
+#team_blue {
     color: lightskyblue;
     position: absolute;
     bottom: 8px;
@@ -17,20 +17,25 @@
     vertical-align: bottom;
 }
 
-.team-name{
+.team-name {
     font-size: 7rem;
     font-weight: bold;
 }
 
-#team_red .team-name th{
+#team_red .team-name th {
     text-align: right;
+}
+
+.player img {
+    height: 40px;
+    width: 40px;
 }
 
 .player {
     font-size: 4rem;
 }
 
-#team_red{
+#team_red {
     color: red;
     position: absolute;
     bottom: 8px;
