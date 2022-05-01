@@ -133,3 +133,6 @@ dist
 **/dir/*.js.map
 **/dir/public/*.js
 **/dir/public/*.js.map
+
+**/dir/**/*.js
+**/dir/**/*.js.map

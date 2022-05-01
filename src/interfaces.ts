@@ -1,31 +1,33 @@
-import {  WebSocket} from 'ws';
+import { WebSocket } from "ws";
 
 export enum Teams {
     Red,
     Blue,
     Spectator,
-    NoTeam
+    NoTeam,
 }
 export interface IUser {
-    name: string,
-    team: Teams,
-    class: String
+    name: string;
+    team: Teams;
+    class: String;
 }
 
 export interface IGame {
-    id: string,
-    users: IUser[],
-    connections: WebSocket[]
+    publicId: string;
+    privateId: string;
+    users: IUser[];
+    connections: WebSocket[];
+    ctwMode: boolean;
 }
 
 export interface IGameStartPlayer {
-    name: string,
-    teamName: string, 
-    className: string
+    name: string;
+    teamName: string;
+    classNumber: number;
 }
 
-export interface IWebSocketMessage{
-    type: string,
-    id: string, 
-    data: any
+export interface IWebSocketMessage {
+    type: string;
+    publicId: string;
+    data: any;
 }

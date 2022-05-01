@@ -1,6 +1,7 @@
 let webSocket = new WebSocket("ws://localhost:8090");
 
 let connectionComplete = false;
+let ctwMode = true;
 
 interface IUser {
     name: string;
@@ -12,32 +13,20 @@ let teamBlue: IUser[] = [];
 
 interface IWebSocketMessage {
     type: string;
-    id: string;
+    publicId: string;
     data: any;
 }
 
-let gameId = document.cookie
+let gamePublicId = document.cookie
     .split("; ")
     .find((cookie) => cookie.startsWith("gameId"))
     ?.substring(7);
 
-console.log(
-    document.cookie.split("; ").find((cookie) => cookie.startsWith("dev"))
-);
-
-let dev: boolean =
-    document.cookie
-        .split("; ")
-        .find((cookie) => cookie.startsWith("dev"))
-        ?.substring(4) === "true";
-
-console.log(dev);
-
 webSocket.onopen = () => {
-    if (gameId) {
+    if (gamePublicId) {
         let message: IWebSocketMessage = {
             type: "init",
-            id: gameId,
+            publicId: gamePublicId,
             data: {},
         };
         webSocket.send(JSON.stringify(message));
@@ -46,21 +35,22 @@ webSocket.onopen = () => {
 
 webSocket.onmessage = (message) => {
     let decodedMessage: IWebSocketMessage = JSON.parse(message.data);
-    if (decodedMessage.id === gameId) {
+    console.log(decodedMessage);
+    if (decodedMessage.publicId === gamePublicId) {
+        console.log(decodedMessage);
         switch (decodedMessage.type) {
             case "initComplete":
-                if (decodedMessage.data) {
+                if (decodedMessage.data.check) {
+                    console.log(decodedMessage.data);
+                    ctwMode = decodedMessage.data.ctwMode;
                     connectionComplete = true;
-                    console.log("Connection complete");
                 } else {
-                    console.log("Connection failed");
                     let root = document.getElementById("root");
-                    if (root) {
-                        root.innerText = "Connection failed";
-                    }
+                    root ? (root.innerText = "Connection failed") : null;
                 }
                 break;
             case "teams":
+                console.log(connectionComplete);
                 setTeams(decodedMessage.data);
                 break;
             case "end":
@@ -88,7 +78,8 @@ function setTeams(teams: any[]) {
             teamBlue.push(correctPlayer);
         }
     });
-
+    console.log(teamRed);
+    console.log(teamBlue);
     createTable(teamRed, "team_red");
     createTable(teamBlue, "team_blue");
 }
@@ -120,7 +111,7 @@ const classList = [
 ];
 
 function createTable(players: IUser[], team: string) {
-    console.log(players);
+    console.log(ctwMode);
     let column = document.getElementById(team);
     let teamName: String = team === "team_red" ? "Red" : "Blue";
     if (column) {
@@ -134,10 +125,10 @@ function createTable(players: IUser[], team: string) {
                 team === "team_red"
                     ? `
                 ${player.name}
-                <img src=${icon} ></img>
+                ${ctwMode ? `<img src=${icon} ></img>` : ""}
                 `
                     : `
-                <img src=${icon} ></img>
+                ${ctwMode ? `<img src=${icon} ></img>` : ""}
                 ${player.name}`;
             html += `<tr class="player" id=${player.name}>
                 <td>

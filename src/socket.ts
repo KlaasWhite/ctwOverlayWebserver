@@ -1,84 +1,90 @@
-import { WebSocketServer, Server, WebSocket} from 'ws';
-import {games} from './app';
-import { IWebSocketMessage } from './interfaces';
+import { WebSocketServer, Server, WebSocket } from "ws";
+import { games } from "./app";
+import { IWebSocketMessage } from "./interfaces";
 
-
-export function startWebsocket(): Server{
+export function startWebsocket(): Server {
     let webSocket = new WebSocketServer({
         port: 8090,
-    })
+    });
 
-    webSocket.on('connection', (ws) => {
-        ws.on('message', (message) => {
-            let decodedMessage = JSON.parse(message.toString());
-            
-            switch(decodedMessage.type){
+    webSocket.on("connection", (ws) => {
+        ws.on("message", (message) => {
+            let decodedMessage: IWebSocketMessage = JSON.parse(
+                message.toString()
+            );
+
+            switch (decodedMessage.type) {
                 case "init":
-                    let check = addConnectionToGame(decodedMessage.id, ws)
-                    ws.send(JSON.stringify({
-                        type: "initComplete",
-                        id: decodedMessage.id,
-                        data: check
-                    }));
-                    check ? sendTeamsToSocket(decodedMessage.id, ws) : null;
-                    break;
-                case "message":
+                    initialiseConnection(decodedMessage.publicId, ws);
                     break;
                 default:
                     break;
             }
-        })
-    })
+        });
+    });
 
     return webSocket;
 }
 
-function addConnectionToGame(id: String, connection: WebSocket):boolean{
-    let game = games.find(game => game.id === id);
-    if(game){
+function initialiseConnection(publicId: string, ws: WebSocket) {
+    let dataObject = addConnectionToGame(publicId, ws);
+
+    ws.send(
+        JSON.stringify({
+            type: "initComplete",
+            publicId: publicId,
+            data: dataObject,
+        })
+    );
+    dataObject.check ? sendTeamsToInitSocket(publicId, ws) : null;
+}
+
+function addConnectionToGame(publicId: String, connection: WebSocket) {
+    let game = games.find((game) => game.publicId === publicId);
+    if (game) {
         game.connections.push(connection);
-        return true;
+        return { check: true, ctwMode: game.ctwMode };
     } else {
-        return false;
+        return { check: false };
     }
 }
 
-function sendTeamsToSocket(id: string, connection:WebSocket){
-    let game = games.find(game => game.id === id);
-    if(game){
-        let message:IWebSocketMessage = {
+function sendTeamsToInitSocket(publicId: string, connection: WebSocket) {
+    let game = games.find((game) => game.publicId === publicId);
+    if (game) {
+        let message: IWebSocketMessage = {
             type: "teams",
-            id: id,
-            data: game.users
-        }
+            publicId: publicId,
+            data: game.users,
+        };
         connection.send(JSON.stringify(message));
     }
 }
 
-export function sendTeamsToSockets(id: string){
-    let game = games.find(game => game.id === id);
-    if(game){
-        let message:IWebSocketMessage = {
+export function sendChangesToConnections(privateId: string) {
+    let game = games.find((game) => game.privateId === privateId);
+    if (game) {
+        let message: IWebSocketMessage = {
             type: "teams",
-            id: id,
-            data: game.users
-        }
-        game.connections.forEach(connection => {
+            publicId: game.publicId,
+            data: game.users,
+        };
+        game.connections.forEach((connection) => {
             connection.send(JSON.stringify(message));
-        })
+        });
     }
 }
 
-export function sendEndCall(id: string){
-    let game = games.find(game => game.id === id);
-    if(game){
-        let message:IWebSocketMessage = {
+export function sendEndCall(id: string) {
+    let game = games.find((game) => game.privateId === id);
+    if (game) {
+        let message: IWebSocketMessage = {
             type: "end",
-            id: id,
-            data: {}
-        }
-        game.connections.forEach(connection => {
+            publicId: game.publicId,
+            data: {},
+        };
+        game.connections.forEach((connection) => {
             connection.send(JSON.stringify(message));
-        })
+        });
     }
 }

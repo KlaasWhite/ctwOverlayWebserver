@@ -1,8 +1,19 @@
 //initalise express
 import express from "express";
 import { IGameStartPlayer, IGame, IUser, Teams } from "./interfaces";
-import { getTeam, getCtwClass } from "./utility";
-import { sendEndCall, sendTeamsToSockets, startWebsocket } from "./socket";
+import { getTeam, getCtwClass, getCtwClassFromCode } from "./utility";
+import {
+    sendEndCall,
+    sendChangesToConnections,
+    startWebsocket,
+} from "./socket";
+import startGame from "./requests/mc/startGame";
+import setCtwMode from "./requests/mc/setCtwMode";
+import endGame from "./requests/mc/endGame";
+import addPlayerToTeam from "./requests/mc/addPlayerToTeam";
+import removePlayerFromTeam from "./requests/mc/removePlayerFromTeam";
+import classChange from "./requests/mc/classChange";
+import classChangeNumber from "./requests/mc/classChangeNumber";
 
 const app = express();
 app.use("/public", express.static("./dir/public"));
@@ -12,103 +23,55 @@ export const games: IGame[] = [];
 
 startWebsocket();
 
-app.post("/api/mc/startGame", (req, res) => {
-    const id: string = Math.random().toString(36).substring(2, 7);
-    let request: IGameStartPlayer[] = req.body;
-    let game: IGame = {
-        id: id,
-        users: [],
-        connections: [],
-    };
-    request.forEach((player) => {
-        let newPlayer: IUser = {
-            name: player.name,
-            team: getTeam(player.teamName),
-            class: player.className ? getCtwClass(player.className) : "none",
-        };
-        game.users.push(newPlayer);
-    });
-    res.send({ code: 200, id: id });
-    games.push(game);
+app.post("/api/mc/startGame/:playerName", (req, res) => {
+    let response = startGame(req.body, req.params.playerName);
+    res.send(response);
+});
+
+app.post("/api/mc/setCtwMode", (req, res) => {
+    let response = setCtwMode(req.body);
+    res.send(response);
 });
 
 app.post("/api/mc/endGame", (req, res) => {
-    let game: IGame = games.find(
-        (game) => game.id === req.body.gameId
-    ) as IGame;
-    if (game) {
-        sendEndCall(game.id);
-        games.splice(games.indexOf(game), 1);
-        res.send({ code: 200 });
-    } else {
-        res.send({ code: 404 });
-    }
+    let response = endGame(req.body);
+    res.send(response);
 });
 
-app.post("/api/mc/teamAdd", (req, res) => {
-    let request = req.body;
-    let game: IGame = games.find((game) => game.id === request.gameId) as IGame;
-    if (game) {
-        let user =
-            game.users.find((user) => user.name === request.name) || null;
-        if (user) {
-            user.team = getTeam(request.team);
-            user.class = request.class
-                ? getCtwClass(request.class)
-                : user.class;
-        } else {
-            user = {
-                name: request.name,
-                team: getTeam(request.team),
-                class: request.class ? getCtwClass(request.class) : "none",
-            };
-            game.users.push(user);
-        }
-
-        res.send({ code: 200 });
-        sendTeamsToSockets(request.gameId);
-    } else {
-        res.send({ code: 404 });
-    }
+app.post("/api/mc/addPlayerToTeam", (req, res) => {
+    let response = addPlayerToTeam(req.body);
+    res.send(response);
 });
 
-app.post("/api/mc/teamRemove", (req, res) => {
-    let request = req.body;
-    let game: IGame = games.find((game) => game.id === request.gameId) as IGame;
-    if (game) {
-        let user =
-            game.users.find((user) => user.name === request.name) || null;
-        if (user) {
-            user.team = Teams.NoTeam;
-        }
-        res.send({ code: 200 });
-        sendTeamsToSockets(request.gameId);
-    } else {
-        res.send({ code: 404 });
-    }
+app.post("/api/mc/removePlayerFromTeam", (req, res) => {
+    let response = removePlayerFromTeam(req.body);
+    res.send(response);
 });
 
 app.post("/api/mc/classChange", (req, res) => {
-    let request = req.body;
-
-    let game: IGame = games.find((game) => game.id === request.gameId) as IGame;
-    if (game) {
-        let user =
-            game.users.find((user) => user.name === request.name) || null;
-        if (user) {
-            user.class = getCtwClass(request.class);
-        }
-        res.send({ code: 200 });
-        sendTeamsToSockets(request.gameId);
-    } else {
-        res.send({ code: 404 });
-    }
+    let response = classChange(req.body);
+    res.send(response);
 });
 
-app.get("/overlay/:gameId", (req, res) => {
-    res.cookie("gameId", req.params.gameId);
+app.post("/api/mc/classChangeNumber", (req, res) => {
+    let response = classChangeNumber(req.body);
+    res.send(response);
+});
+
+app.get("/overlay/:gamePublicId", (req, res) => {
+    res.cookie("gameId", req.params.gamePublicId);
     res.cookie("dev", "false");
     res.sendFile(__dirname + "/pages/overlay.html");
+});
+
+let number = 100;
+
+app.post("/api/mc/charCheck", (req, res) => {
+    console.log("charCheck");
+    console.log(req.body);
+
+    res.send({ code: 200, privateId: number });
+    number += 1;
 });
 
 app.listen(8080, () => {
