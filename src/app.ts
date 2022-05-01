@@ -64,7 +64,8 @@ app.get("/overlay/:gamePublicId", (req, res) => {
     // )}`;
     // console.log(websocketUrl);
     let host = req.get("host");
-    host = host?.substring(0, host.length - PORT.toString().length - 1);
+    console.log(host);
+    // host = host?.substring(0, host.length - PORT.toString().length - 1);
     res.cookie("gameId", req.params.gamePublicId);
     res.cookie("port", PORT);
     res.cookie("host", host);
