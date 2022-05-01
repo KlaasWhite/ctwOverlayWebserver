@@ -1,4 +1,4 @@
-let webSocket = new WebSocket("ws://localhost:8090");
+let webSocket = new WebSocket("wss://ctwoverlay.herokuapp.com");
 
 let connectionComplete = false;
 let ctwMode = true;
