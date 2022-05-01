@@ -1,12 +1,16 @@
 import { Express } from "express";
-import { Server, WebSocket } from "ws";
+import { Server, WebSocket, WebSocketServer } from "ws";
 import { games } from "./app";
 import { IWebSocketMessage } from "./interfaces";
 
-export function startWebsocket(app: any): Server {
-    let webSocket = new Server({ server: app });
+export function startWebsocket(server: any): Server {
+    let webSocketServer = new Server({ server });
 
-    webSocket.on("connection", (ws) => {
+    // webSocketServer.on("listening", (server: Server) => {
+    //     console.log(server);
+    // });
+
+    webSocketServer.on("connection", (ws) => {
         ws.on("message", (message) => {
             let decodedMessage: IWebSocketMessage = JSON.parse(
                 message.toString()
@@ -22,7 +26,7 @@ export function startWebsocket(app: any): Server {
         });
     });
 
-    return webSocket;
+    return webSocketServer;
 }
 
 function initialiseConnection(publicId: string, ws: WebSocket) {

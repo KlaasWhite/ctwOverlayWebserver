@@ -1,4 +1,25 @@
-let webSocket = new WebSocket("wss://ctwoverlay.herokuapp.com");
+let cookieString = document.cookie;
+console.log(cookieString);
+let port = cookieString
+    .split("; ")
+    .find((cookie) => cookie.startsWith("port"))
+    ?.substring(5);
+
+let protocol = cookieString
+    .split("; ")
+    .find((cookie) => cookie.startsWith("protocol"))
+    ?.substring(9);
+
+let host = cookieString
+    .split("; ")
+    .find((cookie) => cookie.startsWith("host"))
+    ?.substring(5);
+
+let url = `${protocol === "http" ? "ws" : "wss"}://${host}:${port}`;
+
+console.log(url);
+
+let webSocket = new WebSocket(url);
 
 let connectionComplete = false;
 let ctwMode = true;

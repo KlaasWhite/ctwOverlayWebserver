@@ -23,8 +23,6 @@ const PORT = process.env.PORT || 8080;
 
 export const games: IGame[] = [];
 
-startWebsocket(app);
-
 app.post("/api/mc/startGame/:playerName", (req, res) => {
     let response = startGame(req.body, req.params.playerName);
     res.send(response);
@@ -61,8 +59,17 @@ app.post("/api/mc/classChangeNumber", (req, res) => {
 });
 
 app.get("/overlay/:gamePublicId", (req, res) => {
+    // let websocketUrl = `${req.protocol === "http" ? "ws" : "wss"}://${req.get(
+    //     "host"
+    // )}`;
+    // console.log(websocketUrl);
+    let host = req.get("host");
+    host = host?.substring(0, host.length - PORT.toString().length - 1);
     res.cookie("gameId", req.params.gamePublicId);
-    res.cookie("dev", "false");
+    res.cookie("port", PORT);
+    res.cookie("host", host);
+    res.cookie("protocol", req.protocol);
+    // res.cookie("websocketUrl", websocketUrl);
     res.sendFile(__dirname + "/pages/overlay.html");
 });
 
@@ -76,6 +83,8 @@ app.post("/api/mc/charCheck", (req, res) => {
     number += 1;
 });
 
-app.listen(PORT, () => {
+let server = app.listen(PORT, () => {
     console.log("server started on port " + PORT);
 });
+
+startWebsocket(server);
