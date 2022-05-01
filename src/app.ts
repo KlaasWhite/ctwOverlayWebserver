@@ -19,6 +19,8 @@ const app = express();
 app.use("/public", express.static("./dir/public"));
 app.use(express.json());
 
+const PORT = process.env.PORT || 8080;
+
 export const games: IGame[] = [];
 
 startWebsocket();
@@ -74,6 +76,6 @@ app.post("/api/mc/charCheck", (req, res) => {
     number += 1;
 });
 
-app.listen(8080, () => {
-    console.log("server started on port 8080");
+app.listen(PORT, () => {
+    console.log("server started on port " + PORT);
 });
