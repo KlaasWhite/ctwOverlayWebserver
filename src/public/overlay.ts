@@ -1,27 +1,29 @@
-let cookieString = document.cookie;
-console.log(cookieString);
-let port = cookieString
-    .split("; ")
-    .find((cookie) => cookie.startsWith("port"))
-    ?.substring(5);
+// let cookieString = document.cookie;
+// console.log(cookieString);
+// let port = cookieString
+//     .split("; ")
+//     .find((cookie) => cookie.startsWith("port"))
+//     ?.substring(5);
 
-let protocol = cookieString
-    .split("; ")
-    .find((cookie) => cookie.startsWith("protocol"))
-    ?.substring(9);
+// let protocol = cookieString
+//     .split("; ")
+//     .find((cookie) => cookie.startsWith("protocol"))
+//     ?.substring(9);
 
-let host = cookieString
-    .split("; ")
-    .find((cookie) => cookie.startsWith("host"))
-    ?.substring(5);
+// let host = cookieString
+//     .split("; ")
+//     .find((cookie) => cookie.startsWith("host"))
+//     ?.substring(5);
 
-let url = `${
-    host?.substring(0, 10) === "localhost" ? "ws" : "wss"
-}://${host}:${port}`;
+// let url = `${
+//     host?.substring(0, 10) === "localhost" ? "ws" : "wss"
+// }://${host}:${port}`;
 
-console.log(url);
+var host = location.origin.replace(/^http/, "ws");
 
-let webSocket = new WebSocket(url);
+console.log(host);
+
+let webSocket = new WebSocket(host);
 
 let connectionComplete = false;
 let ctwMode = true;
