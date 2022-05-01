@@ -15,7 +15,9 @@ let host = cookieString
     .find((cookie) => cookie.startsWith("host"))
     ?.substring(5);
 
-let url = `${protocol === "http" ? "ws" : "wss"}://${host}:${port}`;
+let url = `${
+    host?.substring(0, 10) === "localhost" ? "ws" : "wss"
+}://${host}:${port}`;
 
 console.log(url);
 
