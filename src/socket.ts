@@ -1,11 +1,10 @@
-import { WebSocketServer, Server, WebSocket } from "ws";
+import { Express } from "express";
+import { Server, WebSocket } from "ws";
 import { games } from "./app";
 import { IWebSocketMessage } from "./interfaces";
 
-export function startWebsocket(): Server {
-    let webSocket = new WebSocketServer({
-        port: 8090,
-    });
+export function startWebsocket(app: any): Server {
+    let webSocket = new Server({ server: app });
 
     webSocket.on("connection", (ws) => {
         ws.on("message", (message) => {

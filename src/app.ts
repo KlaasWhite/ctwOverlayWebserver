@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 8080;
 
 export const games: IGame[] = [];
 
-startWebsocket();
+startWebsocket(app);
 
 app.post("/api/mc/startGame/:playerName", (req, res) => {
     let response = startGame(req.body, req.params.playerName);
