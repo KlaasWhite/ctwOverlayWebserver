@@ -2,6 +2,13 @@ import { games } from "../../app";
 import { IGame } from "../../interfaces";
 import { sendEndCall } from "../../socket";
 
+/**
+ *
+ * {
+ *  gameId: string
+ * }
+ */
+
 const endGame = (request: any) => {
     let game: IGame = games.find(
         (game) => game.privateId === request.gameId

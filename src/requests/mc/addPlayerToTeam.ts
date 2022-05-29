@@ -3,6 +3,15 @@ import { IGame } from "../../interfaces";
 import { sendChangesToConnections } from "../../socket";
 import { getCtwClass, getTeam } from "../../utility";
 
+/**
+ *
+ * {
+ *  gameId: string
+ *  team: string
+ *  player: string
+ * }
+ */
+
 const addPlayerToTeam = (request: any) => {
     let game: IGame = games.find(
         (game) => game.privateId === request.gameId

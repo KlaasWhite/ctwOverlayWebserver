@@ -3,6 +3,15 @@ import { IGame } from "../../interfaces";
 import { sendChangesToConnections } from "../../socket";
 import { getCtwClassFromCode } from "../../utility";
 
+/**
+ *
+ * {
+ *  gameId: string
+ *  player: string
+ *  class: number
+ * }
+ */
+
 const classChangeNumber = (request: any) => {
     console.log(request);
     let game = games.find((game) => game.privateId === request.gameId) as IGame;

@@ -2,6 +2,17 @@ import { games } from "../../app";
 import { IGame, IGameStartPlayer, IUser } from "../../interfaces";
 import { getCtwClassFromCode, getTeam } from "../../utility";
 
+/**
+ *
+ * [
+ * {
+ *  name: string
+ *  teamName: string
+ *  classNumber: number
+ * }
+ * ]
+ */
+
 const startGame = (request: IGameStartPlayer[], playerName: string) => {
     const privateId: string = Math.random().toString(36).substring(2, 20);
     const publicId: string = playerName;
