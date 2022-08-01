@@ -38,20 +38,20 @@ let teamBlue: IUser[] = [];
 
 interface IWebSocketMessage {
     type: string;
-    publicId: string;
+    publicGameId: string;
     data: any;
 }
 
-let gamePublicId = document.cookie
+let gameId = document.cookie
     .split("; ")
     .find((cookie) => cookie.startsWith("gameId"))
     ?.substring(7);
 
 webSocket.onopen = () => {
-    if (gamePublicId) {
+    if (gameId) {
         let message: IWebSocketMessage = {
             type: "init",
-            publicId: gamePublicId,
+            publicGameId: gameId,
             data: {},
         };
         webSocket.send(JSON.stringify(message));
@@ -61,7 +61,7 @@ webSocket.onopen = () => {
 webSocket.onmessage = (message) => {
     let decodedMessage: IWebSocketMessage = JSON.parse(message.data);
     console.log(decodedMessage);
-    if (decodedMessage.publicId === gamePublicId) {
+    if (decodedMessage.publicGameId === gameId) {
         console.log(decodedMessage);
         switch (decodedMessage.type) {
             case "initComplete":

@@ -18,7 +18,7 @@ export function startWebsocket(server: any): Server {
 
             switch (decodedMessage.type) {
                 case "init":
-                    initialiseConnection(decodedMessage.publicId, ws);
+                    initialiseConnection(decodedMessage.publicGameId, ws);
                     break;
                 default:
                     break;
@@ -43,9 +43,9 @@ function initialiseConnection(publicId: string, ws: WebSocket) {
 }
 
 function addConnectionToGame(publicId: String, connection: WebSocket) {
-    let game = games.find((game) => game.publicId === publicId);
+    let game = games.find((game) => game.publicGameId === publicId);
     if (game) {
-        game.connections.push(connection);
+        game.wsConnections.push(connection);
         return { check: true, ctwMode: game.ctwMode };
     } else {
         return { check: false };
@@ -53,40 +53,40 @@ function addConnectionToGame(publicId: String, connection: WebSocket) {
 }
 
 function sendTeamsToInitSocket(publicId: string, connection: WebSocket) {
-    let game = games.find((game) => game.publicId === publicId);
+    let game = games.find((game) => game.publicGameId === publicId);
     if (game) {
         let message: IWebSocketMessage = {
             type: "teams",
-            publicId: publicId,
-            data: game.users,
+            publicGameId: game.publicGameId,
+            data: game.players,
         };
         connection.send(JSON.stringify(message));
     }
 }
 
 export function sendChangesToConnections(privateId: string) {
-    let game = games.find((game) => game.privateId === privateId);
+    let game = games.find((game) => game.privateGameId === privateId);
     if (game) {
         let message: IWebSocketMessage = {
             type: "teams",
-            publicId: game.publicId,
-            data: game.users,
+            publicGameId: game.publicGameId,
+            data: game.players,
         };
-        game.connections.forEach((connection) => {
+        game.wsConnections.forEach((connection) => {
             connection.send(JSON.stringify(message));
         });
     }
 }
 
 export function sendEndCall(id: string) {
-    let game = games.find((game) => game.privateId === id);
+    let game = games.find((game) => game.privateGameId === id);
     if (game) {
         let message: IWebSocketMessage = {
             type: "end",
-            publicId: game.publicId,
+            publicGameId: game.publicGameId,
             data: {},
         };
-        game.connections.forEach((connection) => {
+        game.wsConnections.forEach((connection) => {
             connection.send(JSON.stringify(message));
         });
     }

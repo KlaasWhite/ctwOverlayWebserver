@@ -17,11 +17,7 @@ export function getTeam(team: string): Teams {
     }
 }
 
-export function getCtwClass(ctwClass: string): String {
-    return ctwClass.toLowerCase();
-}
-
-export function getCtwClassFromCode(ctwClassCode: number): String {
+export function getCtwClassFromCode(ctwClassCode: number): string {
     let normilisedCode = ctwClassCode - 57616;
 
     switch (normilisedCode) {
@@ -56,7 +52,7 @@ export function getCtwClassFromCode(ctwClassCode: number): String {
         case 50:
             return "grenadier";
         case 51:
-            return "duelst";
+            return "duelist";
         case 66:
             return "explorer";
         case 67:

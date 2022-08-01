@@ -6,28 +6,21 @@ export enum Teams {
     Spectator,
     NoTeam,
 }
-export interface IUser {
+export interface IPlayer {
     name: string;
     team: Teams;
-    class: String;
+    class: string;
 }
 
 export interface IGame {
-    publicId: string;
-    privateId: string;
-    users: IUser[];
-    connections: WebSocket[];
+    publicGameId: string;
+    privateGameId: string;
+    players: IPlayer[];
+    wsConnections: WebSocket[];
     ctwMode: boolean;
 }
-
-export interface IGameStartPlayer {
-    name: string;
-    teamName: string;
-    classNumber: number;
-}
-
 export interface IWebSocketMessage {
     type: string;
-    publicId: string;
+    publicGameId: string;
     data: any;
 }

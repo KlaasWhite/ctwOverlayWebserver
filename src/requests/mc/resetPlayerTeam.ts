@@ -1,25 +1,26 @@
 import { games } from "../../app";
 import {
     CtwOverlayGenericResponse,
-    CtwOverlayRemoveTeamRequest,
+    CtwOverlayResetPlayerTeamRequest,
 } from "../../classes/mc";
 import { IGame, Teams } from "../../interfaces";
 import { sendChangesToConnections } from "../../socket";
-import { getTeam } from "../../utility";
 
-const removeTeam = (
-    request: CtwOverlayRemoveTeamRequest
+const resetPlayerTeam = (
+    request: CtwOverlayResetPlayerTeamRequest
 ): CtwOverlayGenericResponse => {
-    console.log("RemoveTeam");
+    console.log("ResetPlayerTeam");
     console.log(request);
     let game: IGame = games.find(
         (game) => game.privateGameId === request.privateGameId
     ) as IGame;
     if (game) {
-        let team: Teams = getTeam(request.teamName);
-        game.players.forEach((user) => {
-            user.team == team ? (user.team = Teams.Spectator) : null;
-        });
+        let user =
+            game.players.find((user) => user.name === request.playerName) ||
+            null;
+        if (user) {
+            user.team = Teams.NoTeam;
+        }
         sendChangesToConnections(request.privateGameId);
         return new CtwOverlayGenericResponse(200);
     } else {
@@ -27,4 +28,4 @@ const removeTeam = (
     }
 };
 
-export default removeTeam;
+export default resetPlayerTeam;

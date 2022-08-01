@@ -1,19 +1,28 @@
 //initalise express
 import express from "express";
-import { IGameStartPlayer, IGame, IUser, Teams } from "./interfaces";
-import { getTeam, getCtwClass, getCtwClassFromCode } from "./utility";
+import { IGame } from "./interfaces";
 import {
     sendEndCall,
     sendChangesToConnections,
     startWebsocket,
 } from "./socket";
-import startGame from "./requests/mc/startGame";
-import setCtwMode from "./requests/mc/setCtwMode";
-import endGame from "./requests/mc/endGame";
-import addPlayerToTeam from "./requests/mc/addPlayerToTeam";
-import removePlayerFromTeam from "./requests/mc/removePlayerFromTeam";
-import classChange from "./requests/mc/classChange";
-import classChangeNumber from "./requests/mc/classChangeNumber";
+
+import {
+    CtwOverlayRemoveTeamRequest,
+    CtwOverlayResetOverlayRequest,
+    CtwOverlayResetPlayerTeamRequest,
+    CtwOverlaySetPlayerClassRequest,
+    CtwOverlaySetPlayerTeamRequest,
+    CtwOverlayStartOverlayRequest,
+    CtwOverlayStopOverlayRequest,
+} from "./classes/mc";
+import resetOverlay from "./requests/mc/resetOverlay";
+import stopOverlay from "./requests/mc/stopOverlay";
+import removeTeam from "./requests/mc/removeTeam";
+import setPlayerClass from "./requests/mc/setPlayerClass";
+import setPlayerTeam from "./requests/mc/setPlayerTeam";
+import startOverlay from "./requests/mc/startOverlay";
+import resetPlayerTeam from "./requests/mc/resetPlayerTeam";
 
 const app = express();
 app.use("/public", express.static("./dir/public"));
@@ -23,38 +32,53 @@ const PORT = process.env.PORT || 8080;
 
 export const games: IGame[] = [];
 
-app.post("/api/mc/startGame/:playerName", (req, res) => {
-    let response = startGame(req.body, req.params.playerName);
+app.post("/api/mc/removeTeam", (req, res) => {
+    let response = removeTeam(req.body as CtwOverlayRemoveTeamRequest);
     res.send(response);
 });
 
-app.post("/api/mc/setCtwMode", (req, res) => {
-    let response = setCtwMode(req.body);
+app.post("/api/mc/resetPlayerTeam", (req, res) => {
+    let response = resetPlayerTeam(
+        req.body as CtwOverlayResetPlayerTeamRequest
+    );
     res.send(response);
 });
 
-app.post("/api/mc/endGame", (req, res) => {
-    let response = endGame(req.body);
+app.post("/api/mc/resetOverlay", (req, res) => {
+    let response = resetOverlay(req.body as CtwOverlayResetOverlayRequest);
+    res.statusCode = response.code;
     res.send(response);
 });
 
-app.post("/api/mc/addPlayerToTeam", (req, res) => {
-    let response = addPlayerToTeam(req.body);
+app.post("/api/mc/resetPlayerTeam", (req, res) => {
+    let response = resetPlayerTeam(
+        req.body as CtwOverlayResetPlayerTeamRequest
+    );
+    res.statusCode = response.code;
     res.send(response);
 });
 
-app.post("/api/mc/removePlayerFromTeam", (req, res) => {
-    let response = removePlayerFromTeam(req.body);
+app.post("/api/mc/setPlayerClass", (req, res) => {
+    let response = setPlayerClass(req.body as CtwOverlaySetPlayerClassRequest);
+    res.statusCode = response.code;
     res.send(response);
 });
 
-app.post("/api/mc/classChange", (req, res) => {
-    let response = classChange(req.body);
+app.post("/api/mc/setPlayerTeam", (req, res) => {
+    let response = setPlayerTeam(req.body as CtwOverlaySetPlayerTeamRequest);
+    res.statusCode = response.code;
     res.send(response);
 });
 
-app.post("/api/mc/classChangeNumber", (req, res) => {
-    let response = classChangeNumber(req.body);
+app.post("/api/mc/startOverlay", (req, res) => {
+    let response = startOverlay(req.body as CtwOverlayStartOverlayRequest);
+    res.statusCode = response.code;
+    res.send(response);
+});
+
+app.post("/api/mc/stopOverlay", (req, res) => {
+    let response = stopOverlay(req.body as CtwOverlayStopOverlayRequest);
+    res.statusCode = response.code;
     res.send(response);
 });
 
@@ -72,16 +96,6 @@ app.get("/overlay/:gamePublicId", (req, res) => {
     // res.cookie("protocol", req.protocol);
     // res.cookie("websocketUrl", websocketUrl);
     res.sendFile(__dirname + "/pages/overlay.html");
-});
-
-let number = 100;
-
-app.post("/api/mc/charCheck", (req, res) => {
-    console.log("charCheck");
-    console.log(req.body);
-
-    res.send({ code: 200, privateId: number });
-    number += 1;
 });
 
 let server = app.listen(PORT, () => {
