@@ -4,13 +4,14 @@ import {
     CtwOverlayResetOverlayRequest,
 } from "../../classes/mc";
 import { IGame, IPlayer } from "../../interfaces";
+import { sendChangesToConnections } from "../../socket";
 import { getCtwClassFromCode, getTeam } from "../../utility";
 
 const resetOverlay = (
     request: CtwOverlayResetOverlayRequest
 ): CtwOverlayGenericResponse => {
-    console.log("ResetOverlay");
-    console.log(request);
+    // console.log("ResetOverlay");
+    // console.log(request);
     let game: IGame = games.find(
         (game) => game.privateGameId === request.privateGameId
     );
@@ -33,7 +34,7 @@ const resetOverlay = (
     });
 
     game.players = newPlayerList;
-
+    sendChangesToConnections(request.privateGameId);
     return new CtwOverlayGenericResponse(200);
 };
 

@@ -21,7 +21,7 @@
 
 var host = location.origin.replace(/^http/, "ws");
 
-console.log(host);
+// console.log(host);
 
 let webSocket = new WebSocket(host);
 
@@ -60,14 +60,15 @@ webSocket.onopen = () => {
 
 webSocket.onmessage = (message) => {
     let decodedMessage: IWebSocketMessage = JSON.parse(message.data);
-    console.log(decodedMessage);
+    // console.log(decodedMessage);
     if (decodedMessage.publicGameId === gameId) {
-        console.log(decodedMessage);
+        // console.log(decodedMessage);
         switch (decodedMessage.type) {
             case "initComplete":
                 if (decodedMessage.data.check) {
                     console.log(decodedMessage.data);
                     ctwMode = decodedMessage.data.ctwMode;
+                    console.log(ctwMode);
                     connectionComplete = true;
                 } else {
                     let root = document.getElementById("root");
@@ -75,7 +76,7 @@ webSocket.onmessage = (message) => {
                 }
                 break;
             case "teams":
-                console.log(connectionComplete);
+                // console.log(connectionComplete);
                 setTeams(decodedMessage.data);
                 break;
             case "end":
@@ -103,8 +104,8 @@ function setTeams(teams: any[]) {
             teamBlue.push(correctPlayer);
         }
     });
-    console.log(teamRed);
-    console.log(teamBlue);
+    // console.log(teamRed);
+    // console.log(teamBlue);
     createTable(teamRed, "team_red");
     createTable(teamBlue, "team_blue");
 }
@@ -136,7 +137,7 @@ const classList = [
 ];
 
 function createTable(players: IUser[], team: string) {
-    console.log(ctwMode);
+    // console.log(ctwMode);
     let column = document.getElementById(team);
     let teamName: String = team === "team_red" ? "Red" : "Blue";
     if (column) {

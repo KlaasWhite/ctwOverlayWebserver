@@ -10,8 +10,8 @@ import { getCtwClassFromCode } from "../../utility";
 const setPlayerClass = (
     request: CtwOverlaySetPlayerClassRequest
 ): CtwOverlayGenericResponse => {
-    console.log("SetPlayerClass");
-    console.log(request);
+    // console.log("SetPlayerClass");
+    // console.log(request);
     let game = games.find(
         (game) => game.privateGameId === request.privateGameId
     ) as IGame;
@@ -24,7 +24,7 @@ const setPlayerClass = (
         } else {
             return new CtwOverlayGenericResponse(404);
         }
-        console.log(games);
+        // console.log(games);
         sendChangesToConnections(request.privateGameId);
 
         return new CtwOverlayGenericResponse(200);

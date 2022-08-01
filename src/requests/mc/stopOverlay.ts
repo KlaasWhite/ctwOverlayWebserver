@@ -9,8 +9,8 @@ import { sendEndCall } from "../../socket";
 const endOverlay = (
     request: CtwOverlayStopOverlayRequest
 ): CtwOverlayGenericResponse => {
-    console.log("EndOverlay");
-    console.log(request);
+    // console.log("EndOverlay");
+    // console.log(request);
     let game: IGame = games.find(
         (game) => game.privateGameId === request.privateGameId
     ) as IGame;

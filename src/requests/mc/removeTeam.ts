@@ -10,8 +10,8 @@ import { getTeam } from "../../utility";
 const removeTeam = (
     request: CtwOverlayRemoveTeamRequest
 ): CtwOverlayGenericResponse => {
-    console.log("RemoveTeam");
-    console.log(request);
+    // console.log("RemoveTeam");
+    // console.log(request);
     let game: IGame = games.find(
         (game) => game.privateGameId === request.privateGameId
     ) as IGame;

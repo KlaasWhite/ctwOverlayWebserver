@@ -12,6 +12,7 @@ export class CtwOverlayRemoveTeamRequest {
 export class CtwOverlayResetPlayerTeamRequest {
     public playerName: string;
     public privateGameId: string;
+    public teamName: string;
 }
 
 export class CtwOverlayResetOverlayRequest {

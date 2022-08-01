@@ -9,8 +9,8 @@ import { getCtwClassFromCode, getTeam } from "../../utility";
 const startOverlay = (
     request: CtwOverlayStartOverlayRequest
 ): CtwOverlayStartOverlayResponse => {
-    console.log("StartOverlay");
-    console.log(request);
+    // console.log("StartOverlay");
+    // console.log(request);
     let privateGameId: string = Math.random().toString(36).substring(2, 20);
     const publicGameId: string = request.playerName;
 

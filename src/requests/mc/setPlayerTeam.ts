@@ -10,8 +10,8 @@ import { getTeam } from "../../utility";
 const setPlayerTeam = (
     request: CtwOverlaySetPlayerTeamRequest
 ): CtwOverlayGenericResponse => {
-    console.log("SetPlayerTeam");
-    console.log(request);
+    // console.log("SetPlayerTeam");
+    // console.log(request);
     let game: IGame = games.find(
         (game) => game.privateGameId === request.privateGameId
     ) as IGame;

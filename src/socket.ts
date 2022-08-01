@@ -29,21 +29,24 @@ export function startWebsocket(server: any): Server {
     return webSocketServer;
 }
 
-function initialiseConnection(publicId: string, ws: WebSocket) {
-    let dataObject = addConnectionToGame(publicId, ws);
+function initialiseConnection(publicGameId: string, ws: WebSocket) {
+    let dataObject = addConnectionToGame(publicGameId, ws);
+
+    // console.log(dataObject);
 
     ws.send(
         JSON.stringify({
             type: "initComplete",
-            publicId: publicId,
+            publicGameId: publicGameId,
             data: dataObject,
         })
     );
-    dataObject.check ? sendTeamsToInitSocket(publicId, ws) : null;
+
+    dataObject.check ? sendTeamsToInitSocket(publicGameId, ws) : null;
 }
 
-function addConnectionToGame(publicId: String, connection: WebSocket) {
-    let game = games.find((game) => game.publicGameId === publicId);
+function addConnectionToGame(publicGameId: String, connection: WebSocket) {
+    let game = games.find((game) => game.publicGameId === publicGameId);
     if (game) {
         game.wsConnections.push(connection);
         return { check: true, ctwMode: game.ctwMode };
@@ -52,8 +55,8 @@ function addConnectionToGame(publicId: String, connection: WebSocket) {
     }
 }
 
-function sendTeamsToInitSocket(publicId: string, connection: WebSocket) {
-    let game = games.find((game) => game.publicGameId === publicId);
+function sendTeamsToInitSocket(publicGameId: string, connection: WebSocket) {
+    let game = games.find((game) => game.publicGameId === publicGameId);
     if (game) {
         let message: IWebSocketMessage = {
             type: "teams",
