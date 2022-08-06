@@ -42,9 +42,9 @@ export function getCtwClassFromCode(ctwClassCode: number): string {
         case 20:
             return "spider";
         case 32:
-            return "pest";
+            return "pestilent";
         case 33:
-            return "plague";
+            return "plaguedoctor";
         case 34:
             return "looter";
         case 35:
@@ -70,7 +70,7 @@ export function getCtwClassFromCode(ctwClassCode: number): string {
         case 99:
             return "barbarian";
         case 114:
-            return "turtle";
+            return "trappingturtle";
 
         default:
             return "none";
