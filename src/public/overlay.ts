@@ -104,8 +104,8 @@ function setTeams(teams: any[]) {
             teamBlue.push(correctPlayer);
         }
     });
-    // console.log(teamRed);
-    // console.log(teamBlue);
+    console.log(teamRed);
+    console.log(teamBlue);
     createTable(teamRed, "team_red");
     createTable(teamBlue, "team_blue");
 }
@@ -126,13 +126,13 @@ const classList = [
     "looter",
     "luteboi",
     "messenger",
-    "pest",
-    "plague",
+    "pestilent",
+    "plaguedoctor",
     "ranger",
     "rogue",
     "shieldmaiden",
     "spider",
-    "turtle",
+    "trappingturtle",
     "voodoo",
 ];
 
