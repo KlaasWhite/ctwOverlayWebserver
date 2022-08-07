@@ -42,6 +42,8 @@ interface IWebSocketMessage {
     data: any;
 }
 
+let openTime: Date;
+
 let gameId = document.cookie
     .split("; ")
     .find((cookie) => cookie.startsWith("gameId"))
@@ -54,6 +56,7 @@ webSocket.onopen = () => {
             publicGameId: gameId,
             data: {},
         };
+        let openTime = new Date();
         webSocket.send(JSON.stringify(message));
     }
 };
@@ -88,6 +91,12 @@ webSocket.onmessage = (message) => {
                 break;
         }
     }
+};
+
+webSocket.onclose = () => {
+    let closeTime = new Date();
+    let timeOpen = closeTime.getTime() - openTime.getTime();
+    console.log(`Socket was open for ${timeOpen / 1000} seconds`);
 };
 
 function setTeams(teams: any[]) {
