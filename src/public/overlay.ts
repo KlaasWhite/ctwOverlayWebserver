@@ -56,7 +56,7 @@ webSocket.onopen = () => {
             publicGameId: gameId,
             data: {},
         };
-        let openTime = new Date();
+        openTime = new Date();
         webSocket.send(JSON.stringify(message));
     }
 };
