@@ -21,6 +21,30 @@
 
 var host = location.origin.replace(/^http/, "ws");
 
+const keepAlive = () => {
+    return setInterval(() => {
+        let now = new Date();
+        console.log(
+            `Socket has been open for ${
+                (now.getTime() - openTime.getTime()) / 1000
+            } seconds`
+        );
+        if ((now.getTime() - openTime.getTime()) / 1000 / 60 > 10) {
+            webSocket.close();
+        }
+        if (webSocket.readyState === WebSocket.OPEN) {
+            let wsMessage: IWebSocketMessage = {
+                type: "keepAlive",
+                publicGameId: gameId,
+                data: {},
+            };
+            webSocket.send(JSON.stringify(wsMessage));
+        }
+    }, 50000);
+};
+
+let timeOutID;
+
 // console.log(host);
 
 let webSocket = new WebSocket(host);
@@ -57,6 +81,7 @@ webSocket.onopen = () => {
             data: {},
         };
         openTime = new Date();
+        timeOutID = keepAlive();
         webSocket.send(JSON.stringify(message));
     }
 };
@@ -97,6 +122,7 @@ webSocket.onclose = () => {
     let closeTime = new Date();
     let timeOpen = closeTime.getTime() - openTime.getTime();
     console.log(`Socket was open for ${timeOpen / 1000} seconds`);
+    clearTimeout(timeOutID);
 };
 
 function setTeams(teams: any[]) {

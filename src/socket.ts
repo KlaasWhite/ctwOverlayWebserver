@@ -20,6 +20,8 @@ export function startWebsocket(server: any): Server {
                 case "init":
                     initialiseConnection(decodedMessage.publicGameId, ws);
                     break;
+                case "keepAlive":
+                    console.log("Keep alive was called");
                 default:
                     break;
             }
@@ -42,7 +44,7 @@ function initialiseConnection(publicGameId: string, ws: WebSocket) {
         })
     );
 
-    dataObject.check ? sendTeamsToInitSocket(publicGameId, ws) : null;
+    dataObject.check ? sendTeamsToInitSocket(publicGameId, ws) : ws.close();
 }
 
 function addConnectionToGame(publicGameId: String, connection: WebSocket) {
