@@ -43,7 +43,7 @@ const keepAlive = () => {
     }, 50000);
 };
 
-let timeOutID;
+let intervalID;
 
 // console.log(host);
 
@@ -81,7 +81,7 @@ webSocket.onopen = () => {
             data: {},
         };
         openTime = new Date();
-        timeOutID = keepAlive();
+        intervalID = keepAlive();
         webSocket.send(JSON.stringify(message));
     }
 };
@@ -112,6 +112,7 @@ webSocket.onmessage = (message) => {
                 if (root) {
                     root.innerText = "Game ended";
                 }
+                webSocket.close();
             default:
                 break;
         }
@@ -122,7 +123,7 @@ webSocket.onclose = () => {
     let closeTime = new Date();
     let timeOpen = closeTime.getTime() - openTime.getTime();
     console.log(`Socket was open for ${timeOpen / 1000} seconds`);
-    clearTimeout(timeOutID);
+    clearInterval(intervalID);
 };
 
 function setTeams(teams: any[]) {
