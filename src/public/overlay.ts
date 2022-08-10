@@ -170,6 +170,7 @@ const classList = [
     "spider",
     "trappingturtle",
     "voodoo",
+    "strongman",
 ];
 
 function createTable(players: IUser[], team: string) {

@@ -69,6 +69,8 @@ export function getCtwClassFromCode(ctwClassCode: number): string {
             return "iceman";
         case 99:
             return "barbarian";
+        case 100:
+            return "strongman";
         case 114:
             return "trappingturtle";
 
